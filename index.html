@@ -9,6 +9,9 @@
   <title>Zap Link</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.2/css/bootstrap.min.css">
   <link rel="icon" type="image/png" href="img/zap-link.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
   <style>
     body {
       background-image: url(img/fundo.webp);
@@ -114,6 +117,23 @@
       color: #fff;
       text-decoration: none;
     }
+
+    .loader {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 2s linear infinite;
+      margin: 20px auto;
+      display: none;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
   </style>
 </head>
 
@@ -133,6 +153,7 @@
           placeholder="Digite o texto (máximo 150 caracteres)" required></textarea>
       </div>
       <button id="generateButton" class="btn btn-primary">Gerar Link</button>
+      <div id="loader" class="loader"></div>
       <div class="result-box">
         <input type="text" id="linkOutput" readonly>
         <button id="copyButton" class="btn btn-primary copy-button">Copiar</button>
@@ -144,16 +165,43 @@
   </footer>
 
   <script>
-    document.getElementById('generateButton').addEventListener('click', function () {
+    document.getElementById('generateButton').addEventListener('click', function() {
+      // Exibir o loader
+      document.getElementById('loader').style.display = 'block';
+    
       var phone = document.getElementById('phone').value;
       var text = document.getElementById('text').value;
-
-      var encodedPhone = encodeURIComponent(phone);
-      var encodedText = encodeURIComponent(text);
-
-      var link = 'https://api.whatsapp.com/send?phone=' + encodedPhone + '&text=' + encodedText;
-
-      document.getElementById('linkOutput').value = link;
+    
+      var baseUrl = 'https://api.whatsapp.com/send';
+      var link = baseUrl + '?phone=' + encodeURIComponent(phone) + '&text=' + encodeURIComponent(text);
+    
+      // Chamada para a API do Bitly para encurtar o link
+      var bitlyApiUrl = 'https://api-ssl.bitly.com/v4/shorten';
+      var bitlyAccessToken = '1ca55d9de04b5fb5add5f9e0c25090d4752c8dba'; // Substitua pela sua chave de API do Bitly
+    
+      axios.post(bitlyApiUrl, {
+        long_url: link
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + bitlyAccessToken
+        }
+      })
+      .then(function(response) {
+        var shortLink = response.data.link;
+    
+        var linkOutput = document.getElementById('linkOutput');
+        linkOutput.value = shortLink;
+    
+        // Esconder o loader após obter o link encurtado
+        document.getElementById('loader').style.display = 'none';
+      })
+      .catch(function(error) {
+        console.error(error);
+    
+        // Esconder o loader em caso de erro
+        document.getElementById('loader').style.display = 'none';
+      });
     });
 
     document.getElementById('copyButton').addEventListener('click', function () {
