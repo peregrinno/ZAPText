@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!-- Zap.LINK 2023 | Autor: Luan Araújo | Github: peregrinno -->
+
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zap Link</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.2/css/bootstrap.min.css">
+  <link rel="icon" type="image/png" href="img/zap-link.png">
+  <style>
+    body {
+      background-image: url(img/fundo.webp);
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 110vh;
+    }
+
+    .content {
+      flex: 1;
+    }
+
+    .container {
+      /* From https://css.glass */
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .logo {
+      margin-bottom: 20px;
+    }
+    
+    .logo img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto; /* Centraliza a imagem horizontalmente */
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      text-align: center;
+      background-color: #075e54;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .result-box {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 10px;
+      margin-top: 20px;
+    }
+
+    .result-box input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .copy-button {
+      margin-top: 10px;
+    }
+
+    
+    .footer {
+      background-color: #454545;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+    }
+    
+    .footer a {
+      color: #fff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="content">
+    <div class="logo">
+      <img src="/img/zap-link.png" alt="Logo" srcset="" width="200" >
+    </div>
+    <div class="container">
+      <div class="form-group">
+        <label for="phone">Telefone:</label>
+        <input type="number" id="phone" class="form-control" placeholder="Digite o telefone (com código do país e DDD)">
+      </div>
+      <div class="form-group">
+        <label for="text">Texto:</label>
+        <textarea id="text" class="form-control" rows="4" maxlength="150"
+          placeholder="Digite o texto (máximo 150 caracteres)"></textarea>
+      </div>
+      <button id="generateButton" class="btn btn-primary">Gerar Link</button>
+      <div class="result-box">
+        <input type="text" id="linkOutput" readonly>
+        <button id="copyButton" class="btn btn-primary copy-button">Copiar</button>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    Desenvolvido por <a href="https://github.com/peregrinno">peregrinno</a>
+  </footer>
+
+  <script>
+    document.getElementById('generateButton').addEventListener('click', function () {
+      var phone = document.getElementById('phone').value;
+      var text = document.getElementById('text').value;
+
+      var encodedPhone = encodeURIComponent(phone);
+      var encodedText = encodeURIComponent(text);
+
+      var link = 'https://api.whatsapp.com/send?phone=' + encodedPhone + '&text=' + encodedText;
+
+      document.getElementById('linkOutput').value = link;
+    });
+
+    document.getElementById('copyButton').addEventListener('click', function () {
+      var linkOutput = document.getElementById('linkOutput');
+
+      linkOutput.select();
+      linkOutput.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+
+      alert('Link copiado para a área de transferência.');
+    });
+  </script>
+</body>
+
+</html>
