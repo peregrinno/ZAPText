@@ -174,34 +174,11 @@
     
       var baseUrl = 'https://api.whatsapp.com/send';
       var link = baseUrl + '?phone=' + encodeURIComponent(phone) + '&text=' + encodeURIComponent(text);
-    
-      // Chamada para a API do Bitly para encurtar o link
-      var bitlyApiUrl = 'https://api-ssl.bitly.com/v4/shorten';
-      var bitlyAccessToken = '1ca55d9de04b5fb5add5f9e0c25090d4752c8dba'; // Substitua pela sua chave de API do Bitly
-    
-      axios.post(bitlyApiUrl, {
-        long_url: link
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + bitlyAccessToken
-        }
-      })
-      .then(function(response) {
-        var shortLink = response.data.link;
-    
-        var linkOutput = document.getElementById('linkOutput');
-        linkOutput.value = shortLink;
-    
-        // Esconder o loader após obter o link encurtado
-        document.getElementById('loader').style.display = 'none';
-      })
-      .catch(function(error) {
-        console.error(error);
-    
-        // Esconder o loader em caso de erro
-        document.getElementById('loader').style.display = 'none';
-      });
+
+      var linkOutput = document.getElementById('linkOutput');
+      linkOutput.value = link;
+      
+      document.getElementById('loader').style.display = 'None';
     });
 
     document.getElementById('copyButton').addEventListener('click', function () {
